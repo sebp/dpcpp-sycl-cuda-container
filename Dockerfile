@@ -41,10 +41,6 @@ RUN mkdir -p /opt/sycl/source/llvm/build \
 ENV PATH=/opt/sycl/bin:$PATH
 ENV LD_LIBRARY_PATH=/opt/sycl/lib:$LD_LIBRARY_PATH
 
-# Install fish shell
-RUN apt-get update && apt-get install -y --no-install-recommends fish \
-	  && rm -rf /var/lib/apt/lists/*
-
 # setup non-root user
 # https://code.visualstudio.com/remote/advancedcontainers/add-nonroot-user#_creating-a-nonroot-user
 ARG USERNAME=vscode
@@ -56,7 +52,6 @@ RUN groupadd --gid ${USER_GID} ${USERNAME} \
     && apt-get install -y sudo \
     && echo ${USERNAME} ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/${USERNAME} \
     && chmod 0440 /etc/sudoers.d/${USERNAME} \
-    && chsh -s $(which fish) ${USERNAME} \
     && rm -rf /var/lib/apt/lists/*
 
 USER vscode
