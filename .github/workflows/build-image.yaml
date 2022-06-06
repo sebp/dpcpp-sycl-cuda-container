@@ -6,6 +6,7 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
+  TEST_IMAGE_NAME: ${{ github.repository }}:test
 
 jobs:
   build-and-push-image:
@@ -50,6 +51,19 @@ jobs:
             type=raw,value=latest,enable={{is_default_branch}}
           flavor:
             prefix=dpcpp-${{ steps.versions.outputs.dpcpp }}-
+
+      - name: Build and export to Docker
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          load: true
+          tags: ${{ env.TEST_IMAGE_NAME }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Test image
+        run: |
+          docker run --rm ${{ env.TEST_IMAGE_NAME }} clang++ -v
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v3
