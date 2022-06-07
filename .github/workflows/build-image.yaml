@@ -49,8 +49,7 @@ jobs:
             type=ref,event=pr
             # set latest tag for default branch
             type=raw,value=latest,enable={{is_default_branch}}
-          flavor:
-            prefix=dpcpp-${{ steps.versions.outputs.dpcpp }}-
+            type=raw,value=dpcpp-${{ steps.versions.outputs.dpcpp }},enable={{is_default_branch}}
 
       - name: Build and export to Docker
         uses: docker/build-push-action@v3
